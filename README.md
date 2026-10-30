@@ -166,8 +166,3 @@ contrast on one frame patch and needs numpy and Pillow.
 ```bash
 python tools/pq_read_closeness.py
 ```
-
-## License
-
-MIT, see [LICENSE](LICENSE).
-<!-- draft license choice: confirm MIT before publishing -->
