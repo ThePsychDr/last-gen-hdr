@@ -23,7 +23,7 @@ here="$(cd "$(dirname "$0")" && pwd)"
 payload="$here/hdr-keeper-device.sh"
 
 # Git Bash on Windows rewrites arguments that look like /paths into Windows paths, which would turn
-# /data/local/tmp into C:/Program Files/Git/data/local/tmp. Turn that off; local paths go through
+# /data/local/tmp into a folder under the Git install. Turn that off; local paths go through
 # cygpath instead.
 export MSYS_NO_PATHCONV=1 MSYS2_ARG_CONV_EXCL='*'
 localpath() { if command -v cygpath > /dev/null 2>&1; then cygpath -w "$1"; else printf '%s\n' "$1"; fi; }
