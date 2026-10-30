@@ -59,7 +59,8 @@ case "$cmd" in
     start)
         if [ -n "$(running)" ]; then echo "already running"; exit 0; fi
         if grep -q $'\r' "$payload"; then
-            echo "$payload has Windows line endings; re-clone the repo or run: sed -i 's/\r\$//' $payload"
+            printf '%s
+' "$payload has Windows line endings; re-clone the repo or run: sed -i 's/$//' $payload"
             exit 1
         fi
         "$adb" -s "$dev" push "$(localpath "$payload")" /data/local/tmp/hdr-keeper-device.sh > /dev/null || exit 1
