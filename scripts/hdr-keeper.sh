@@ -58,9 +58,10 @@ stop_keeper() {
 case "$cmd" in
     start)
         if [ -n "$(running)" ]; then echo "already running"; exit 0; fi
-        if grep -q $'\r' "$payload"; then
-            printf '%s
-' "$payload has Windows line endings; re-clone the repo or run: sed -i 's/$//' $payload"
+        # grep can't be used here: Git for Windows' grep ignores CRs
+        # shellcheck disable=SC2094  # both sides only read the file
+        if ! tr -d '\r' < "$payload" | cmp -s - "$payload"; then
+            printf '%s\n' "$payload has Windows line endings; re-clone the repo or run: sed -i 's/\r\$//' $payload"
             exit 1
         fi
         "$adb" -s "$dev" push "$(localpath "$payload")" /data/local/tmp/hdr-keeper-device.sh > /dev/null || exit 1
