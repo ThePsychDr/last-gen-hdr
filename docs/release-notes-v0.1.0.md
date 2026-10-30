@@ -31,4 +31,4 @@ curves and native HDR output from RE6 are on the roadmap.
 **Undo:** `hdr-keeper.sh <cube-ip> stop`, or reboot the Cube. Nothing it writes to the HDMI driver
 survives a reboot.
 
-Setup and details: [README](../README.md).
+Setup and details: [README](https://github.com/ThePsychDr/last-gen-hdr#readme).
