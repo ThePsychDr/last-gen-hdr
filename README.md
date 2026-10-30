@@ -28,13 +28,13 @@ one game; reproduce with `python tools/pq_read_closeness.py`):
 | Reinhard | 43 nits | 26 nits |
 
 So mid-tones land close to where HDR content puts them, and highlights get real HDR headroom. It isn't
-mastered HDR (see [What's still off](#whats-still-off)), but on the tested TV it looks like HDR.
+mastered HDR (see [What's still off](#whats-still-off)), but by eye on the tested TV it looks like HDR.
 
 The Cube is what makes this possible without extra hardware. Its HDMI input can pass the console's
 signal straight through, and from a plain ADB shell you can tell its HDMI driver to send the HDR10
 flag. Fire OS puts SDR back about once a frame, so the keeper re-sends the flag back to back. Measured
 on the Cube with a PS3 game: the output read HDR10 in 97.6% of status reads over 12 minutes (lowest
-one-second window 95%, longest SDR gap about 30 ms), and no blink was visible on the TV.
+one-second window 95%, longest SDR gap about 30 ms). By eye on the TV over the same run: no blink.
 
 ## What you need
 
@@ -68,7 +68,7 @@ one-second window 95%, longest SDR gap about 30 ms), and no blink was visible on
    should get one line describing what the Cube is sending.
 
 On the TV, if it never switches to HDR, check that HDR is enabled for the HDMI port the Cube is on (on
-Samsung: Input Signal Plus).
+Samsung: Input Signal Plus). That's a general HDR tip, not something tested with this setup.
 
 ## Use
 
@@ -100,7 +100,8 @@ With the keeper holding, the HDR field reads `HDR10-GAMMA_ST2084`; without it, `
 
 ## What's still off
 
-Flagging the picture gets close to HDR, not all the way. Measured against generic curves:
+Flagging the picture gets close to HDR, not all the way. The first two points are computed for generic
+tone-map curves (`tools/pq_read_closeness.py`), not yet measured per game:
 
 - **Contrast is steeper than the engine's own light.** Through the mid-tones, brightness changes
   about 1.5–2× faster than the scene does (up to 2.8× for an ACES-style curve). Deep shadows sit about
@@ -109,19 +110,22 @@ Flagging the picture gets close to HDR, not all the way. Measured against generi
   brightness, roughly twice the step in SDR, so smooth gradients (skies, fog) can band.
 - **Colour.** The colour space the flag carries hasn't been read yet. If it says BT.2020 over a
   BT.709 game, colours come out oversaturated.
-- **Sharpness.** Edges and texture can look crunchy. The leading cause is the same steep contrast
-  showing at texture scale (every edge gets about twice the contrast); the TV upscaling a 720p signal
-  to 4K may add to it.
-- **Rare blips.** In the 12-minute test the Cube's driver logged four brief SDR events. None were seen
-  on screen, but they haven't been ruled out.
+- **Sharpness.** By eye on RE6, edges and texture can look crunchy. The likely cause (not yet
+  measured) is the same steep contrast showing at texture scale, since every edge gets about twice the
+  contrast; the TV upscaling a 720p signal to 4K may add to it.
+- **Rare blips.** In the 12-minute test the Cube's driver logged four brief off/on switch events.
+  Whether the TV got SDR at those moments wasn't measured; none were seen on screen.
 
 ## Tested
 
-| Game | Platform | Result |
+| Game | Platform | Result (by eye) |
 |---|---|---|
-| Call of Duty: Black Ops II | PS3 | Shows in HDR, looks like HDR |
-| Resident Evil 6 | PS3 | Shows in HDR, looks like HDR |
-| Call of Duty: Black Ops III | PS4 version on PS5 | Shows in HDR, looks like HDR |
+| Call of Duty: Black Ops II | PS3 | TV switches to HDR, looks like HDR |
+| Resident Evil 6 | PS3 | TV switches to HDR, looks like HDR |
+| Call of Duty: Black Ops III | PS4 version on PS5 | TV switches to HDR, looks like HDR |
+
+All three were first seen with an earlier version of the keeper that re-sent the flag every 50 ms and
+blinked. The 12-minute hold test above was run with the current keeper on the PS3.
 
 Chain: console → Fire TV Cube 3rd gen (Fire OS build PS7715.5585N, HDMI Input Passthrough on, Dynamic
 Range Adaptive) → Samsung S95B. The PS3 arrived at the Cube as 720p60 RGB 12-bit. Fire OS updates can

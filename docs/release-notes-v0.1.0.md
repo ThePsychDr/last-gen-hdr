@@ -11,7 +11,7 @@ the 26-nit HDR reference.
 
 **Tested:** Black Ops II and Resident Evil 6 on PS3, Black Ops III (PS4 version) on PS5; Fire TV
 Cube 3rd gen on Fire OS PS7715.5585N; Samsung S95B. Measured with a PS3 game: HDR10 in 97.6% of
-status reads over 12 minutes, no visible blink.
+status reads over 12 minutes; by eye over the same run, no blink.
 
 **In this release**
 - `scripts/hdr-keeper.sh <cube-ip> start|stop|status|remove`
