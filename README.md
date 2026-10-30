@@ -8,6 +8,10 @@ output flagged as HDR10, so the TV reads the game's own picture as HDR.
 
 <!-- video link goes here before the repo goes public -->
 
+Results below are labelled by where they come from: **measured** (read off the Cube), **by eye** (seen
+on the tested TV), **computed** (from `tools/pq_read_closeness.py`) or **predicted** (expected, not yet
+checked).
+
 ## Why it works
 
 Games from the PS3 and PS4 era already light their scenes in HDR inside the engine. At the end of each
@@ -27,13 +31,14 @@ one game; reproduce with `python tools/pq_read_closeness.py`):
 | ACES fit | 36 nits | 26 nits |
 | Reinhard | 43 nits | 26 nits |
 
-So mid-tones land close to where HDR content puts them, and highlights get real HDR headroom. It isn't
-mastered HDR (see [What's still off](#whats-still-off)), but by eye on the tested TV it looks like HDR.
+So mid-tones land close to where HDR content puts them (computed), and highlights get real HDR
+headroom. It isn't mastered HDR (see [What's still off](#whats-still-off)), but by eye on the tested TV
+it looks like HDR.
 
 The Cube is what makes this possible without extra hardware. Its HDMI input can pass the console's
 signal straight through, and from a plain ADB shell you can tell its HDMI driver to send the HDR10
-flag. Fire OS puts SDR back about once a frame, so the keeper re-sends the flag back to back. Measured
-on the Cube with a PS3 game: the output read HDR10 in 97.6% of status reads over 12 minutes (lowest
+flag. Fire OS puts SDR back about once a frame (measured), so the keeper re-sends the flag back to
+back. Measured on the Cube with a PS3 game: the output read HDR10 in 97.6% of status reads over 12 minutes (lowest
 one-second window 95%, longest SDR gap about 30 ms). By eye on the TV over the same run: no blink.
 
 ## What you need
@@ -72,23 +77,35 @@ Samsung: Input Signal Plus). That's a general HDR tip, not something tested with
 
 ## Use
 
-Switch the Cube to its HDMI input with the console on, then:
+1. **Switch the Cube to its HDMI input** with the console on and its picture showing.
+2. **Then start the keeper:**
+
+   ```bash
+   bash scripts/hdr-keeper.sh <cube-ip> start
+   ```
+
+   It prints `started`. If the HDMI input isn't on screen it refuses and tells you to switch first.
+3. The TV should switch to HDR. Play.
+
+**Start it again whenever the Cube sleeps or leaves the HDMI input.** The keeper doesn't survive
+either one (by eye and in its status, in use; the cause hasn't been measured): if the Cube goes to sleep, or switches to the home screen or an app (it can
+do that on its own), switch back to the HDMI input and run `start` again. It also stops by itself
+after 4 hours. It does keep running if your computer sleeps or ADB disconnects.
+
+**To tell it's running**, run `status`:
 
 ```bash
-bash scripts/hdr-keeper.sh <cube-ip> start
+bash scripts/hdr-keeper.sh <cube-ip> status
 ```
 
-The TV should switch to HDR. Play.
+While it's holding the flag you get `running (pid …)`, `HDMI input on screen: yes` and
+`output: HDR10-GAMMA_ST2084`, and the log ends in `HDMI IN on screen: holding HDR10`. `not running` or
+`output: SDR` means start it again (on the HDMI input).
 
 ```bash
-bash scripts/hdr-keeper.sh <cube-ip> status    # running or not, last lines of its log
 bash scripts/hdr-keeper.sh <cube-ip> stop      # stop; Fire OS puts its own HDR state back
 bash scripts/hdr-keeper.sh <cube-ip> remove    # stop and delete the keeper's files from the Cube
 ```
-
-The keeper keeps running on the Cube if your computer sleeps or ADB disconnects. It only works while
-the HDMI input is on screen and idles otherwise, so the home screen and apps are left alone. It stops
-by itself after 4 hours; run `start` again to continue.
 
 To watch what the Cube is sending, one line per change (Ctrl+C to stop):
 
@@ -101,20 +118,21 @@ With the keeper holding, the HDR field reads `HDR10-GAMMA_ST2084`; without it, `
 ## What's still off
 
 Flagging the picture gets close to HDR, not all the way. The first two points are computed for generic
-tone-map curves (`tools/pq_read_closeness.py`), not yet measured per game:
+tone-map curves, not yet measured per game:
 
-- **Contrast is steeper than the engine's own light.** Through the mid-tones, brightness changes
+- **Contrast is steeper than the engine's own light** (computed). Through the mid-tones, brightness changes
   about 1.5–2× faster than the scene does (up to 2.8× for an ACES-style curve). Deep shadows sit about
   1.5–2 stops darker than the HDR reference, and upper mid-tones about 2 stops brighter.
-- **Banding.** The console sends 8-bit values. Read as HDR10, one step is about a 4% change in
+- **Banding** (computed). The console sends 8-bit values. Read as HDR10, one step is about a 4% change in
   brightness, roughly twice the step in SDR, so smooth gradients (skies, fog) can band.
-- **Colour.** The colour space the flag carries hasn't been read yet. If it says BT.2020 over a
-  BT.709 game, colours come out oversaturated.
-- **Sharpness.** By eye on RE6, edges and texture can look crunchy. The likely cause (not yet
-  measured) is the same steep contrast showing at texture scale, since every edge gets about twice the
-  contrast; the TV upscaling a 720p signal to 4K may add to it.
-- **Rare blips.** In the 12-minute test the Cube's driver logged four brief off/on switch events.
-  Whether the TV got SDR at those moments wasn't measured; none were seen on screen.
+- **Colour** (not yet measured). The colour space the flag carries hasn't been read yet. If it says
+  BT.2020 over a BT.709 game, colours come out oversaturated.
+- **Sharpness** (by eye). On RE6, edges and texture can look crunchy, with the TV in Filmmaker Mode.
+  Predicted cause, not yet measured: the same steep contrast showing at texture scale, since every
+  edge gets about twice the contrast; the TV upscaling a 720p signal to 4K may add to it.
+- **Rare blips** (measured on the Cube, not on the wire). In the 12-minute test the Cube's driver
+  logged four 1.5-second off/on switch events. Whether the TV got SDR at those moments wasn't measured;
+  none were seen on screen.
 
 ## Tested
 
@@ -125,7 +143,8 @@ tone-map curves (`tools/pq_read_closeness.py`), not yet measured per game:
 | Call of Duty: Black Ops III | PS4 version on PS5 | TV switches to HDR, looks like HDR |
 
 All three were first seen with an earlier version of the keeper that re-sent the flag every 50 ms and
-blinked. The 12-minute hold test above was run with the current keeper on the PS3.
+blinked (by eye; measured on the Cube as HDR about 13% of the time). The 12-minute hold test above
+(measured, and by eye: no blink) was run with the current keeper on the PS3.
 
 Chain: console → Fire TV Cube 3rd gen (Fire OS build PS7715.5585N, HDMI Input Passthrough on, Dynamic
 Range Adaptive) → Samsung S95B. The PS3 arrived at the Cube as 720p60 RGB 12-bit. Fire OS updates can
@@ -137,7 +156,8 @@ change how the HDMI driver behaves; other builds are untested.
   (`/sys/class/amhdmitx/amhdmitx0/config`). That's a live setting in the driver, not a file on
   storage; it doesn't survive a reboot. It also keeps three files in `/data/local/tmp`: the keeper
   script, its log, and a stop file. It doesn't root the Cube, flash anything or change any settings.
-- **Cost.** One CPU core on the Cube while the HDMI input is on screen. Nothing while it idles.
+- **Cost.** One CPU core on the Cube while it holds the flag (measured: about 9,000 writes a
+  second). Heat and wear over long sessions haven't been measured.
 - **Undo.** `bash scripts/hdr-keeper.sh <cube-ip> stop`, or just reboot the Cube (unplug it, or
   `adb reboot`). `remove` also deletes its files.
 - **ADB.** ADB Debugging lets any computer you approved control the Cube over your network. Turn it

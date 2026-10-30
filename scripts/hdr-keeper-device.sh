@@ -9,7 +9,8 @@
 # writing back to back held it in ~98%.
 #
 # Re-checks the passthrough prop every ~0.25 s and idles (one check a second) whenever the input
-# isn't on screen, so the Fire TV home screen and apps are left alone.
+# isn't on screen, so the Fire TV home screen and apps are left alone. In use it hasn't survived the
+# Cube sleeping or leaving the HDMI IN, so hdr-keeper.sh starts it only with the input on screen.
 # Stops when /data/local/tmp/hdr-keeper.stop appears, or after 4 hours.
 t=/sys/class/amhdmitx/amhdmitx0
 stop=/data/local/tmp/hdr-keeper.stop

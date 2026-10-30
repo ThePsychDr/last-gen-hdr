@@ -3,9 +3,12 @@
 # (hdr-keeper-device.sh) runs on the Cube and holds the HDR10 InfoFrame on its HDMI output while the
 # HDMI IN is on screen in passthrough, so the TV reads the console's picture as HDR10 (PQ).
 #
-#   start   copy the keeper to /data/local/tmp and start it detached (keeps running if adb drops)
+#   start   copy the keeper to /data/local/tmp and start it detached (keeps running if adb drops);
+#           refuses unless the HDMI IN is on screen, since the keeper doesn't survive the Cube
+#           sleeping or leaving the HDMI IN
 #   stop    ask it to stop, then confirm it's gone; Fire OS puts its own HDR state back
-#   status  whether it's running, plus the last lines of its log
+#   status  whether it's running, whether the HDMI IN is on screen, the output's HDR state, and the
+#           last lines of its log
 #   remove  stop it and delete its files from /data/local/tmp
 #
 # It writes only to the HDMI-TX driver's config node while running, and to its own files in
@@ -47,6 +50,8 @@ fi
 
 ashell() { "$adb" -s "$dev" shell "$@" < /dev/null | tr -d '\r'; }
 running() { ashell "pgrep -f hdr-keeper-device.sh"; }
+# on while the HDMI IN is on screen in passthrough
+input_on() { [ "$(ashell "getprop persist.sys.hdmi.passthrough.mode")" = on ]; }
 
 stop_keeper() {
     [ -n "$(running)" ] || { echo "not running"; return; }
@@ -58,6 +63,11 @@ stop_keeper() {
 case "$cmd" in
     start)
         if [ -n "$(running)" ]; then echo "already running"; exit 0; fi
+        # The keeper doesn't survive the Cube sleeping or leaving the HDMI IN, so it's started on it.
+        if ! input_on; then
+            echo "the HDMI input isn't on screen in passthrough: switch the Cube to it, then run start again"
+            exit 1
+        fi
         # grep can't be used here: Git for Windows' grep ignores CRs
         # shellcheck disable=SC2094  # both sides only read the file
         if ! tr -d '\r' < "$payload" | cmp -s - "$payload"; then
@@ -75,6 +85,8 @@ case "$cmd" in
     status)
         pids="$(running | tr '\n' ' ')"
         if [ -n "$pids" ]; then echo "running (pid ${pids% })"; else echo "not running"; fi
+        if input_on; then echo "HDMI input on screen: yes"; else echo "HDMI input on screen: no"; fi
+        echo "output: $(ashell "cat /sys/class/amhdmitx/amhdmitx0/hdmi_hdr_status" | tr -d '\n')"
         ashell "tail -n 5 /data/local/tmp/hdr-keeper.log 2>/dev/null"
         ;;
     remove)
