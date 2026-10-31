@@ -6,7 +6,7 @@ No game patch, no root, no box to buy.
 The console plugs into the Cube's HDMI input. A small script, started over ADB, keeps the Cube's
 output flagged as HDR10, so the TV reads the game's own picture as HDR.
 
-<!-- video link goes here before the repo goes public -->
+The why, in plain words: [thepsychdr.com/hdr](https://thepsychdr.com/hdr/).
 
 Results below are labelled by where they come from: **measured** (read off the Cube), **by eye** (seen
 on the tested TV), **computed** (from `tools/pq_read_closeness.py`) or **predicted** (expected, not yet
@@ -122,7 +122,8 @@ tone-map curves, not yet measured per game:
 
 - **Contrast is steeper than the engine's own light** (computed). Through the mid-tones, brightness changes
   about 1.5–2× faster than the scene does (up to 2.8× for an ACES-style curve). Deep shadows sit about
-  1.5–2 stops darker than the HDR reference, and upper mid-tones about 2 stops brighter.
+  1.3–2 stops darker than the HDR reference (3.5–4 for ACES), and upper mid-tones about 2 stops
+  brighter.
 - **Banding** (computed). The console sends 8-bit values. Read as HDR10, one step is about a 4% change in
   brightness, roughly twice the step in SDR, so smooth gradients (skies, fog) can band.
 - **Colour** (not yet measured). The colour space the flag carries hasn't been read yet. If it says
@@ -143,7 +144,7 @@ tone-map curves, not yet measured per game:
 | Call of Duty: Black Ops III | PS4 version on PS5 | TV switches to HDR, looks like HDR |
 
 All three were first seen with an earlier version of the keeper that re-sent the flag every 50 ms and
-blinked (by eye; measured on the Cube as HDR about 13% of the time). The 12-minute hold test above
+blinked (by eye; measured on the Cube as HDR10 in about 7% of status reads). The 12-minute hold test above
 (measured, and by eye: no blink) was run with the current keeper on the PS3.
 
 Chain: console → Fire TV Cube 3rd gen (Fire OS build PS7715.5585N, HDMI Input Passthrough on, Dynamic
