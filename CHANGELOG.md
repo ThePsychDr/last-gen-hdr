@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased
+
+Docs only; the scripts and the tool are unchanged.
+
+- `docs/reproduce.md`: step-by-step guide, from hardware to checking the HDR10 flag, with what you
+  should see at each step.
+- `docs/faq.md`: the skeptical questions, answered from the repo's own evidence.
+- `docs/troubleshooting.md`: each script message and common symptom, with the fix.
+- Issue templates: bug report, and a results report with display, game and console fields.
+- README: two-sentence summary, signal-chain diagram and links to the above at the top. `python3`
+  in the tool's commands.
+
 ## v0.1.0 (2026-10-30)
 
 First release.

@@ -1,0 +1,140 @@
+name: Results report
+description: You tried it (worked or not). Tell us the display, game and console.
+title: "[Results] <game> on <console> / <TV>"
+labels: ["results"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for trying it. A "didn't work" report is as useful as a "worked" one.
+
+        Please label each claim the way the repo does: **measured** (read off the Cube or an instrument),
+        **by eye** (seen on your TV), **computed** (from `tools/pq_read_closeness.py`).
+        The steps behind these fields are in [reproduce it yourself](https://github.com/ThePsychDr/last-gen-hdr/blob/main/docs/reproduce.md).
+
+  - type: input
+    id: display
+    attributes:
+      label: Display (make and model)
+      placeholder: Samsung S95B (QN65S95B)
+    validations:
+      required: true
+  - type: input
+    id: display-settings
+    attributes:
+      label: Display settings
+      description: Picture mode, the HDMI port's HDR/enhanced setting, and any SDR-to-HDR feature (on or off).
+      placeholder: Filmmaker Mode, Input Signal Plus on, HDR+ Mode off
+
+  - type: input
+    id: game
+    attributes:
+      label: Game
+      placeholder: Resident Evil 6
+    validations:
+      required: true
+  - type: input
+    id: game-version
+    attributes:
+      label: Game version
+      description: Platform version and region, disc or download.
+      placeholder: PS3, EU disc
+  - type: dropdown
+    id: game-hdr
+    attributes:
+      label: Does the game have its own HDR mode?
+      options:
+        - "No"
+        - "Yes"
+        - Don't know
+    validations:
+      required: true
+
+  - type: input
+    id: console
+    attributes:
+      label: Console (model)
+      placeholder: PS3 Slim CECH-2501A / PS5 running the PS4 version
+    validations:
+      required: true
+  - type: input
+    id: console-settings
+    attributes:
+      label: Console video settings
+      description: Output resolution, RGB range, and the console's own HDR setting if it has one.
+      placeholder: 720p, RGB Full, (no HDR on PS3)
+
+  - type: dropdown
+    id: cube
+    attributes:
+      label: Fire TV device
+      options:
+        - Fire TV Cube 3rd gen (AFTGAZL)
+        - Other (say which below)
+    validations:
+      required: true
+  - type: input
+    id: fireos
+    attributes:
+      label: Fire OS software version
+      description: Settings → My Fire TV → About.
+      placeholder: PS7715.5585N
+    validations:
+      required: true
+  - type: input
+    id: repo-version
+    attributes:
+      label: Version of this repo
+      description: Release (v0.1.0) or the commit you cloned (`git rev-parse --short HEAD`).
+    validations:
+      required: true
+
+  - type: dropdown
+    id: tv-switched
+    attributes:
+      label: Did the TV switch to HDR? (by eye)
+      options:
+        - Yes, and stayed there
+        - Yes, but it blinked or dropped out
+        - "No"
+    validations:
+      required: true
+  - type: input
+    id: tv-signal
+    attributes:
+      label: What the TV says the signal is
+      description: The TV's HDR badge or signal info, if it shows one.
+      placeholder: HDR10, 720p
+  - type: textarea
+    id: keeper-status
+    attributes:
+      label: Output of `bash scripts/hdr-keeper.sh <cube-ip> status` (keeper running, on the HDMI input)
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: hdr-status
+    attributes:
+      label: Output of `bash scripts/hdr-status.sh <cube-ip>`, before starting the keeper and while it runs
+      description: Two lines is enough. A few minutes of `hdr-status.sh <cube-ip> 1` is better if you saw drops.
+      render: text
+    validations:
+      required: true
+  - type: input
+    id: watched
+    attributes:
+      label: How long you watched
+      placeholder: 30 minutes of play, no blink seen
+
+  - type: textarea
+    id: looks
+    attributes:
+      label: How it looks
+      description: Highlights, shadows, contrast, banding, colour, sharpness, compared with the same scene in SDR (keeper stopped). Label each point.
+      placeholder: |
+        By eye: highlights clearly brighter than with the keeper stopped; sky bands in the opening level.
+  - type: textarea
+    id: extra
+    attributes:
+      label: Anything else
+      description: Analyser readings, lag measurements, other sources on the HDMI input. Photos welcome, though a phone photo can't show HDR.

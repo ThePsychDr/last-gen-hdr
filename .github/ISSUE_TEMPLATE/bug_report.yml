@@ -1,0 +1,77 @@
+name: Bug report
+description: A script errors, does the wrong thing, or the docs are wrong.
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please check [troubleshooting](https://github.com/ThePsychDr/last-gen-hdr/blob/main/docs/troubleshooting.md) first; it covers each message the scripts print.
+        If it ran fine but the picture or the TV didn't do what you hoped, a **results report** is the better fit.
+
+  - type: textarea
+    id: ran
+    attributes:
+      label: What you ran
+      render: bash
+      placeholder: bash scripts/hdr-keeper.sh 192.168.1.50 start
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Full output
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected instead
+    validations:
+      required: true
+  - type: textarea
+    id: status
+    attributes:
+      label: Output of `bash scripts/hdr-keeper.sh <cube-ip> status` and `bash scripts/hdr-status.sh <cube-ip>`
+      description: Includes the keeper's log. Skip if the script can't connect at all.
+      render: text
+
+  - type: dropdown
+    id: computer
+    attributes:
+      label: Computer
+      options:
+        - Windows, Git Bash
+        - Windows, other shell (WSL, MSYS2, …)
+        - macOS
+        - Linux
+    validations:
+      required: true
+  - type: input
+    id: adb
+    attributes:
+      label: adb version
+      description: First line of `adb version`.
+    validations:
+      required: true
+  - type: input
+    id: fireos
+    attributes:
+      label: Fire TV device and Fire OS software version
+      description: Settings → My Fire TV → About.
+      placeholder: Fire TV Cube 3rd gen, PS7715.5585N
+    validations:
+      required: true
+  - type: input
+    id: repo-version
+    attributes:
+      label: Version of this repo
+      description: Release (v0.1.0) or the commit you cloned (`git rev-parse --short HEAD`).
+    validations:
+      required: true
+  - type: input
+    id: chain
+    attributes:
+      label: Console and TV
+      placeholder: PS3 → Cube → Samsung S95B
