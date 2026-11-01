@@ -1,10 +1,27 @@
 # last-gen-hdr
 
-Play PS3- and PS4-era games in HDR on an HDR TV, with a Fire TV Cube (3rd gen) you may already own.
-No game patch, no root, no box to buy.
+PS3- and PS4-era games already pack HDR light into their SDR picture; this repo makes a Fire TV Cube
+(3rd gen) flag that picture as HDR10, so an HDR TV reads the game's own values on the HDR curve. No
+game patch, no root, no box to buy: the console goes into the Cube's HDMI input, and a small script
+started over ADB holds the flag.
 
-The console plugs into the Cube's HDMI input. A small script, started over ADB, keeps the Cube's
-output flagged as HDR10, so the TV reads the game's own picture as HDR.
+<!-- Picture slot: replace the diagram below with a photo of the setup if you like, e.g.
+     ![PS3 into a Fire TV Cube into a Samsung S95B](docs/img/setup.jpg) -->
+```
+ PS3 / PS4 ──HDMI──▶ Fire TV Cube (3rd gen) ──HDMI──▶ HDR10 TV
+ game output,        HDMI Input Passthrough on;       reads the same values
+ unchanged           keeper holds the HDR10 flag      on the PQ (HDR10) curve
+                              ▲
+                              │ ADB over your network: start / status / stop
+                          your computer
+```
+
+- **[Reproduce it yourself](docs/reproduce.md)**: hardware, setup, what you should see, and how to
+  check the HDR10 flag.
+- **[FAQ](docs/faq.md)**: the skeptical questions, answered from the evidence here.
+- **[Troubleshooting](docs/troubleshooting.md)**: every message the scripts print, and what to do.
+- **[Send your results](https://github.com/ThePsychDr/last-gen-hdr/issues/new/choose)**: display,
+  game and console, worked or not.
 
 The why, in plain words: [thepsychdr.com/hdr](https://thepsychdr.com/hdr/).
 
@@ -23,7 +40,7 @@ as HDR10 and the TV reads those same values on the PQ curve, which unpacks the t
 out toward the TV's peak brightness while keeping every tone in order.
 
 How close it lands, computed for typical game tone-map curves (generic curves, not measured from any
-one game; reproduce with `python tools/pq_read_closeness.py`):
+one game; reproduce with `python3 tools/pq_read_closeness.py`):
 
 | Tone-map curve | Mid-grey read as HDR10 | HDR reference for mid-grey |
 |---|---|---|
@@ -189,5 +206,5 @@ Pass a measured curve with `--curve game.csv` (rows of `scene_x,code_v`). `--edg
 contrast on one frame patch and needs numpy and Pillow.
 
 ```bash
-python tools/pq_read_closeness.py
+python3 tools/pq_read_closeness.py    # `python` on Windows
 ```
