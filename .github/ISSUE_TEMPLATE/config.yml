@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Reproduce it yourself
+    url: https://github.com/ThePsychDr/last-gen-hdr/blob/main/docs/reproduce.md
+    about: Step-by-step setup, and how to check the HDR10 flag.
+  - name: Troubleshooting
+    url: https://github.com/ThePsychDr/last-gen-hdr/blob/main/docs/troubleshooting.md
+    about: What each script message means, and the usual fixes.
