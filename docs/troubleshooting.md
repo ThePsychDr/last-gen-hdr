@@ -35,6 +35,17 @@ On Windows in Git Bash, that looks like `ADB=/c/platform-tools/adb.exe`.
 
 If the Cube uses a port other than 5555, pass it as `<cube-ip>:<port>`.
 
+If the message ends in `failed to authenticate`, the Cube is reachable but hasn't approved this
+computer yet: look at the TV for the "Allow USB debugging?" prompt (see the next section), then run
+the command again.
+
+If nothing prints for a minute or two, the computer can't reach that address at all: the IP is
+wrong, the Cube is asleep, or it's on another network. adb waits about two minutes before it gives
+up with `Connection timed out`. Press Ctrl+C, check the IP, and try again.
+
+On the first run, adb may also print `daemon not running; starting now`. That's adb starting its
+own server and is harmless.
+
 ### `<cube-ip>:5555 is '…': accept the "Allow USB debugging?" prompt on the TV, then run this again`
 
 Look at the TV. Choose **Always allow from this computer**, then run the command again. If no prompt

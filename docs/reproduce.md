@@ -49,14 +49,18 @@ with this setup.)
 
 1. Get the repo: `git clone https://github.com/ThePsychDr/last-gen-hdr`, or the green **Code**
    button → **Download ZIP** and unzip it. Open a terminal in the folder.
-2. Check `adb version` prints a version. If `adb` isn't on your PATH, put `ADB=/path/to/adb` in front
+2. Get `adb` if you don't have it: on macOS `brew install --cask android-platform-tools`, on
+   Debian or Ubuntu `sudo apt install adb`, on Windows unzip
+   [platform-tools](https://developer.android.com/tools/releases/platform-tools) somewhere like
+   `C:\platform-tools` and install [Git for Windows](https://git-scm.com/download/win) for Git Bash.
+3. Check `adb version` prints a version. If `adb` isn't on your PATH, put `ADB=/path/to/adb` in front
    of every command below, for example:
 
    ```bash
    ADB=/c/platform-tools/adb.exe bash scripts/hdr-status.sh <cube-ip>
    ```
 
-3. Approve the computer on the Cube:
+4. Approve the computer on the Cube:
 
    ```bash
    bash scripts/hdr-status.sh <cube-ip>
