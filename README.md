@@ -1,5 +1,18 @@
 # last-gen-hdr
 
+## Start here
+
+**What it does:** your PS3 or PS4 game shows as HDR on an HDR TV, using a Fire TV Cube and one script. No game patch.
+
+**How to use it:** put the console into the Cube's HDMI input and switch the Cube to that input. Then run
+`bash scripts/hdr-keeper.sh <cube-ip> start`. Check with `... status`, stop with `... stop`. Start it again whenever the
+Cube sleeps or leaves the input. First time? Follow [docs/reproduce.md](docs/reproduce.md).
+
+**What's live:** the scripts, the guide, the FAQ and troubleshooting. Seen working by eye on Black Ops II and RE6 (PS3) and
+Black Ops III (PS4 on PS5), on a Samsung S95B.
+
+**What's next:** per-game curves and native HDR from RE6 (see Roadmap).
+
 PS3- and PS4-era games already pack HDR light into their SDR picture; this repo makes a Fire TV Cube
 (3rd gen) flag that picture as HDR10, so an HDR TV reads the game's own values on the HDR curve. No
 game patch, no root, no box to buy: the console goes into the Cube's HDMI input, and a small script
@@ -181,7 +194,7 @@ change how the HDMI driver behaves; other builds are untested.
 - **ADB.** ADB Debugging lets any computer you approved control the Cube over your network. Turn it
   off in Developer Options when you're not using the keeper.
 - **Your TV.** The TV receives a standard HDR10 signal and decodes it as it would any HDR10 source.
-  The brightest values ask for more than any TV can show, so the TV tone-maps them to its own peak.
+  The brightest values ask for more than any TV can show, so the TV tone-maps them to its own peak (the tested S95B peaks around 1,560 nits in Filmmaker mode with a 2% window, measured 2026-11-05).
 
 ## Roadmap
 
